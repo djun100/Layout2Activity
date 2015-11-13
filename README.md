@@ -2,6 +2,7 @@ Layout2Activity
 ===============
 
 由layout布局文件自动生成activity代码<br>
+约定：需要转换为Java代码的组件的id必须以m开头，如mBtnLogin<br>
 还在手写private Button btnxxxx吗？<br>
 还在手写btnxxxx=(Button)findViewById(R.id.btnxxxx);?<br>
 太out了！<br>
