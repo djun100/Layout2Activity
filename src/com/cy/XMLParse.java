@@ -1,9 +1,7 @@
 package com.cy;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -12,27 +10,26 @@ import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.SAXException;
 
 public class XMLParse {
-    private static final String filePath = "account_login.xml";
 
     public static void main(String[] args) {
+        File[] files= new File("./").listFiles();
         SAXParserFactory saxfa = SAXParserFactory.newInstance();
         HandlerParseXml handlerParseXml = new HandlerParseXml();
-        try {
-            SAXParser saxparser = saxfa.newSAXParser();
-            InputStream is = new FileInputStream(filePath);
-            saxparser.parse(is, handlerParseXml);
+        for (File file:files) {
+            String fileName=file.getName();
+            if (!fileName.endsWith("xml")) continue;
+            try {
+                SAXParser saxparser = saxfa.newSAXParser();
+                InputStream is = new FileInputStream(fileName);
+                saxparser.parse(is, handlerParseXml);
 
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            CodeGenerator codeGenerator = new CodeGenerator(handlerParseXml.getList());
+//            System.out.println(codeGenerator.getContent2());
+            Utils.write_UTF8_FileContent(new File(fileName.substring(0,fileName.lastIndexOf(".")+1)+"java"),codeGenerator.getContent2());
         }
-
-        CodeGenerator codeGenerator = new CodeGenerator(handlerParseXml.getList());
-        System.out.println(codeGenerator.getContent2());
     }
 }
